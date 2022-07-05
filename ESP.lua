@@ -89,6 +89,7 @@ function ESP:SetVisible(obj, onscreen)
     for _, v in next, obj.addons do
         if not self.Enabled then
             v.Visible = false    
+            continue
         end
         
         v.Visible = onscreen
