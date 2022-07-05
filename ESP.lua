@@ -75,6 +75,10 @@ end
 function ESP:InitCheckParent(part)
     local parent_check; parent_check = part:GetPropertyChangedSignal("Parent"):Connect(function()
         if part.Parent then return end
+        if not self.Objects[part] then
+            parent_check:Disconnect()
+            return
+        end
         
         parent_check:Disconnect()
         self:RemoveObj(part)
