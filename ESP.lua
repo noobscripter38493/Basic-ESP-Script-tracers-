@@ -23,7 +23,7 @@ function ESP:New(part, properties)
         Color = part.Color
     }
     
-    setmetatable(obj, {__index = getprops(part)}) -- winning
+    setmetatable(obj, {__index = getprops(part)}) -- now, dont have to put every property into the table
     
     obj.addons = {}
     local addons = obj.addons
