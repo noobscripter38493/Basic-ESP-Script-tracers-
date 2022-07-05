@@ -63,6 +63,8 @@ function ESP:New(part, properties)
 end
 
 function ESP:RemoveObj(part)
+    if not self.Objects[part] then return end -- manual remove object call
+
     for _, obj in next, self.Objects[part].addons do
         obj:Remove()
     end
@@ -82,8 +84,7 @@ end
 function ESP:SetVisible(obj, onscreen)
     for _, v in next, obj.addons do
         if not self.Enabled then
-            v.Visible = false  
-            continue
+            v.Visible = false    
         end
         
         v.Visible = onscreen
@@ -107,8 +108,6 @@ function ESP:Update(part, obj)
 end
 
 game.RunService.RenderStepped:Connect(function()
-    if not ESP.Enabled then return end
-    
     for part, v in next, ESP.Objects do
         ESP:Update(part, v)
     end
