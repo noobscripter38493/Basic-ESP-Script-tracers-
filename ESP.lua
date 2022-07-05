@@ -17,17 +17,23 @@ function ESP:DrawAddon(class, properties)
     return obj
 end
 
-function ESP:New(part)
-    local obj = {}
+function ESP:New(part, properties)
+    local obj = properties or {
+        Name = part.Name,
+        Color = part.Color
+    }
+    
+    setmetatable(obj, {__index = getprops(part)}) -- winning
+    
     obj.addons = {}
     local addons = obj.addons
 
     addons.Text = self:DrawAddon("Text", {
-        Text = part.Name,
+        Text = obj.Name,
         Size = 20,
         Center = true,
         Outline = true,
-        Color = part.Color,
+        Color = obj.Color,
         Visible = true
     })
 
@@ -35,7 +41,7 @@ function ESP:New(part)
         From = viewportSize / 2,
         Thickness = 2.5,
         Visible = true,
-        Color = part.Color
+        Color = obj.Color
     })
 
     setmetatable(obj, {
