@@ -27,29 +27,40 @@ local ESP = {
 }
 
 function ESP:New(class, part)
+    if not ESP:InitCheckParent(part) then return end
+
     local obj = Drawing.new(class)
     
     self.Objects[part] = obj
 end
 
-for _, v in ipairs(workspace:GetDescendants()) do
-    if v:IsA("Part") then
-        ESP:New("Line", v)
+function ESP:InitCheckParent(part)
+    return part.Parent and part:GetPropertyChangedSignal("Parent"):Connect(function()
+        if part.Parent then return end
+        
+        self.Objects[part]:Remove()
+        self.Objects[part] = nil
+    end)
+end
+
+function ESP:Update(part, obj)
+    local v3, onscreen = worldToViewport(camera, part.Position)
+    
+    if onscreen then 
+        obj.Visible = true
+    else
+        obj.Visible = false
     end
+    
+    obj.To = Vector2.new(v3.X, v3.Y)
 end
 
 game.RunService.RenderStepped:Connect(function()
     if ESP.Enabled then
-        for i, v in next, ESP.Objects do
-            local v3, onscreen = worldToViewport(camera, i.Position)
-            
-            if onscreen then 
-                v.Visible = true
-            else
-                v.Visible = false
-            end
-            
-            v.To = Vector2.new(v3.X, v3.Y)
+        for part, v in next, ESP.Objects do
+            ESP:Update(part, v)
         end
     end
 end)
+
+return ESP
