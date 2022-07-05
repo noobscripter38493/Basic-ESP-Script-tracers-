@@ -82,8 +82,8 @@ end
 function ESP:SetVisible(obj, onscreen)
     for _, v in next, obj.addons do
         if not self.Enabled then
-            v.Visible = false   
-            return
+            v.Visible = false  
+            continue
         end
         
         v.Visible = onscreen
@@ -107,6 +107,8 @@ function ESP:Update(part, obj)
 end
 
 game.RunService.RenderStepped:Connect(function()
+    if not ESP.Enabled then return end
+    
     for part, v in next, ESP.Objects do
         ESP:Update(part, v)
     end
