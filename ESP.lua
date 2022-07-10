@@ -4,7 +4,7 @@ local worldToViewport = camera.WorldToViewportPoint
 
 local ESP = {
     Enabled = true,
-    Objects = setmetatable({}, {__mode = "k"}) -- this should stop the table from holding on to nil instances and stop the esp from drawing lines to those instances
+    Objects = setmetatable({}, {__mode = "k"}) -- this should make it easier to remove objects
 }
 
 function ESP:DrawAddon(class, properties)
