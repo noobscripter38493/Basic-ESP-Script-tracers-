@@ -4,7 +4,7 @@ local worldToViewport = camera.WorldToViewportPoint
 
 local ESP = {
     Enabled = true,
-    Objects = setmetatable({}, {__mode = "k"}) -- afaik, if the key has no more references automatically remove the obj
+    Objects = setmetatable({}, {__mode = "k"}) -- afaik, if the key has no more references, the next gc cycle will remove it from the weak table
 }
 
 function ESP:DrawAddon(class, properties)
