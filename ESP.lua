@@ -4,7 +4,7 @@ local worldToViewport = camera.WorldToViewportPoint
 
 local ESP = {
     Enabled = true,
-    Objects = setmetatable({}, {__mode = "k"}) -- afaik, if the key has no more references, the next gc cycle will remove it from the weak table
+    Objects = {}
 }
 
 function ESP:DrawAddon(class, properties)
@@ -75,10 +75,6 @@ end
 function ESP:InitCheckParent(part)
     local parent_check; parent_check = part:GetPropertyChangedSignal("Parent"):Connect(function()
         if part.Parent then return end
-        if not self.Objects[part] then
-            parent_check:Disconnect()
-            return
-        end
         
         parent_check:Disconnect()
         self:RemoveObj(part)
@@ -87,27 +83,20 @@ end
 
 function ESP:SetVisible(obj, onscreen)
     for _, v in next, obj.addons do
-        if not self.Enabled then
-            v.Visible = false    
-            continue
-        end
-        
-        v.Visible = onscreen
+        v.Visible = self.Enabled and onscreen
     end
 end
 
-function ESP:GetPosition(part, obj)
+function ESP:GetPosition(part)
     local v3, onscreen = worldToViewport(camera, part.Position)
-    
-    self:SetVisible(obj, onscreen)
-
     local v2 = Vector2.new(v3.X, v3.Y)
 
-    return v2
+    return v2, onscreen
 end
 
 function ESP:Update(part, obj)
-    local position = self:GetPosition(part, obj)
+    local position, onscreen = self:GetPosition(part)
+    self:SetVisible(obj, onscreen)
     
     obj.Position = position
 end
